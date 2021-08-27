@@ -1,10 +1,15 @@
 # Markdown Guide
 
-- [Headers](#Headers)
-- [Paragraphs](#Paragraphs)
-- [Lists](#Lists)
-- [Links & Images](#Links-&-Images)
-- [Code](#Code)
+- [Markdown Guide](#markdown-guide)
+	- [Headers](#headers)
+	- [Paragraphs](#paragraphs)
+	- [Lists](#lists)
+		- [Bulleted](#bulleted)
+		- [Numeric](#numeric)
+	- [Links & Images](#links--images)
+		- [Links](#links)
+		- [Images](#images)
+	- [Code](#code)
 
 ## Headers
 
@@ -49,11 +54,11 @@ Just hitting the enter key doesn't work
 ### Links
 
 ```
-This is a link to [Google](https://google.com)
+This is a link to [Google Alternatives](https://restoreprivacy.com/google-alternatives/)
 This is a link to [README.md](README.md)
 ```
 
-This is a link to [Google](https://google.com)  
+This is a link to [Google Alternatives](https://restoreprivacy.com/google-alternatives/)
 This is a link to [README.md](README.md)
 
 ### Images
