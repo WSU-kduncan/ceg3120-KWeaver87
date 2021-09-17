@@ -36,19 +36,23 @@ impl EventHandler for Handler {
             // TODO: Reimplement as webhook
             let content = match command.data.name.as_str() {
                 "riker" => {
-                    if let Some(first_opt) = command.data.options.first() {
-                        if let ApplicationCommandInteractionDataOptionValue::Integer(num_lines) =
-                            first_opt.resolved.as_ref().unwrap_or(
-                                &ApplicationCommandInteractionDataOptionValue::Integer(1),
-                            )
-                        {
-                            riker_ipsum(&ctx, &num_lines)
-                        } else {
-                            riker_ipsum(&ctx, &1)
-                        }
-                    } else {
-                        riker_ipsum(&ctx, &1)
-                    }
+                    let lines_requested = command
+                        .data
+                        .options
+                        .first()
+                        .and_then(|o| {
+                            if let Some(ApplicationCommandInteractionDataOptionValue::Integer(
+                                lines_req,
+                            )) = o.resolved.as_ref()
+                            {
+                                Some(lines_req)
+                            } else {
+                                None
+                            }
+                        })
+                        .unwrap_or(&1);
+
+                    riker_ipsum(&ctx, lines_requested)
                 }
                 _ => "not implemented :(".to_string(),
             };
