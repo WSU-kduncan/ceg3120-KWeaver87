@@ -1,5 +1,6 @@
 #![allow(non_snake_case)]
-use std::env;
+use serde::Deserialize;
+use std::{collections::HashSet, env, fs::File, path::Path};
 
 use serenity::{
     async_trait,
@@ -19,9 +20,21 @@ use serenity::{
             Interaction, InteractionResponseType,
         },
     },
+    prelude::TypeMapKey,
 };
 
 const MAX_RIKER_LINES: i32 = 10;
+struct RikerData;
+impl TypeMapKey for RikerData {
+    type Value = HashSet<RikerLine>;
+}
+
+#[derive(Clone, Debug, Hash, Eq, PartialEq, Deserialize)]
+struct RikerLine {
+    text: String,
+    episode: String,
+    word_count: u64,
+}
 
 #[group]
 #[commands(riker)]
@@ -52,7 +65,7 @@ impl EventHandler for Handler {
                         })
                         .unwrap_or(&1);
 
-                    riker_ipsum(&ctx, lines_requested)
+                    riker_ipsum(&ctx, lines_requested).await
                 }
                 _ => "not implemented :(".to_string(),
             };
@@ -96,13 +109,11 @@ impl EventHandler for Handler {
             })
             .await;
 
+        let mut data = ctx.data.write().await;
+        data.insert::<RikerData>(load_riker_data());
+
         println!("{} is initialized!", ready.user.name);
     }
-}
-
-fn riker_ipsum(_context: &Context, num_lines: &i64) -> String {
-    // TODO: Use dictionary!
-    format!("Hello I'm RikerIpsum and you wanted {} lines", num_lines)
 }
 
 #[tokio::main]
@@ -133,7 +144,27 @@ async fn main() {
 
 #[command]
 async fn riker(ctx: &Context, msg: &Message) -> CommandResult {
-    msg.reply(ctx, riker_ipsum(ctx, &1)).await?;
+    msg.reply(ctx, riker_ipsum(ctx, &1).await).await?;
 
     Ok(())
+}
+
+async fn riker_ipsum(ctx: &Context, num_lines: &i64) -> String {
+	let data = ctx.data.read().await;
+	let rikers = data.get::<RikerData>().expect("Expected RikerData in TypeMap");
+	println!("Line: {:?}", rikers.iter().nth(0).unwrap());
+
+
+    // TODO: Use dictionary!
+    format!("Hello I'm RikerIpsum and you wanted {} lines", num_lines)
+
+}
+
+fn load_riker_data() -> HashSet<RikerLine> {
+    let file = File::open(Path::new("data/riker.json")).expect("Couldn't load json file");
+
+    let deserialized =
+        serde_json::from_reader(&file).expect("Error reading json data");
+
+    deserialized
 }
