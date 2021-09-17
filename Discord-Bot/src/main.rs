@@ -1,6 +1,7 @@
 #![allow(non_snake_case)]
+use rand::prelude::IteratorRandom;
 use serde::Deserialize;
-use std::{collections::HashSet, env, fs::File, path::Path};
+use std::{collections::HashSet, convert::TryInto, env, fs::File, path::Path};
 
 use serenity::{
     async_trait,
@@ -23,13 +24,14 @@ use serenity::{
     prelude::TypeMapKey,
 };
 
-const MAX_RIKER_LINES: i32 = 10;
+const MAX_RIKER_LINES: i32 = 8;
+const RIKER_DATA_PATH: &str = "data/riker.json";
 struct RikerData;
 impl TypeMapKey for RikerData {
     type Value = HashSet<RikerLine>;
 }
 
-#[derive(Clone, Debug, Hash, Eq, PartialEq, Deserialize)]
+#[derive(Debug, Hash, Eq, PartialEq, Deserialize)]
 struct RikerLine {
     text: String,
     episode: String,
@@ -39,7 +41,6 @@ struct RikerLine {
 #[group]
 #[commands(riker)]
 struct General;
-
 struct Handler;
 
 #[async_trait]
@@ -49,7 +50,7 @@ impl EventHandler for Handler {
             // TODO: Reimplement as webhook
             let content = match command.data.name.as_str() {
                 "riker" => {
-                    let lines_requested = command
+                    let lines_requested: usize = command
                         .data
                         .options
                         .first()
@@ -63,7 +64,10 @@ impl EventHandler for Handler {
                                 None
                             }
                         })
-                        .unwrap_or(&1);
+                        .unwrap_or(&1)
+                        .to_owned()
+                        .try_into()
+                        .expect("Could not parse option from i64 to usize");
 
                     riker_ipsum(&ctx, lines_requested).await
                 }
@@ -120,7 +124,7 @@ impl EventHandler for Handler {
 async fn main() {
     dotenv::dotenv().ok();
     let framework = StandardFramework::new()
-        .configure(|c| c.prefix("!")) // set the bot's prefix to "~"
+        .configure(|c| c.prefix("!")) // set the bot's prefix to "!"
         .group(&GENERAL_GROUP);
 
     let app_id = env::var("DISCORD_APP_ID")
@@ -144,27 +148,30 @@ async fn main() {
 
 #[command]
 async fn riker(ctx: &Context, msg: &Message) -> CommandResult {
-    msg.reply(ctx, riker_ipsum(ctx, &1).await).await?;
+    msg.reply(ctx, riker_ipsum(ctx, 1).await).await?;
 
     Ok(())
 }
 
-async fn riker_ipsum(ctx: &Context, num_lines: &i64) -> String {
-	let data = ctx.data.read().await;
-	let rikers = data.get::<RikerData>().expect("Expected RikerData in TypeMap");
-	println!("Line: {:?}", rikers.iter().nth(0).unwrap());
+async fn riker_ipsum(ctx: &Context, num_lines: usize) -> String {
+    let data = ctx.data.read().await;
+    let rikers = data
+        .get::<RikerData>()
+        .expect("Expected RikerData in TypeMap");
 
+    let mut rng = &mut rand::thread_rng();
 
-    // TODO: Use dictionary!
-    format!("Hello I'm RikerIpsum and you wanted {} lines", num_lines)
-
+    rikers
+        .iter()
+        .choose_multiple(&mut rng, num_lines)
+        .iter()
+        .map(|line| line.text.clone())
+        .collect::<Vec<String>>()
+        .join(" ")
 }
 
 fn load_riker_data() -> HashSet<RikerLine> {
-    let file = File::open(Path::new("data/riker.json")).expect("Couldn't load json file");
+    let file = File::open(Path::new(RIKER_DATA_PATH)).expect("Couldn't load riker.json file");
 
-    let deserialized =
-        serde_json::from_reader(&file).expect("Error reading json data");
-
-    deserialized
+    serde_json::from_reader(&file).expect("Error reading riker.json data")
 }
