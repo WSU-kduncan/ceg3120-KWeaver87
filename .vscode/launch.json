@@ -1,0 +1,17 @@
+{
+	"configurations": [
+		{
+			"type": "lldb",
+			"request": "launch",
+			"name": "run Discord-Bot",
+			"program": "${workspaceFolder}/Discord-Bot/target/debug/Discord-Bot",
+			"args": [],
+			"cwd": "${workspaceFolder}/Discord-Bot",
+			"sourceMap": {},
+			"sourceLanguages": [
+				"rust"
+			],
+			"preLaunchTask": "rust: cargo build"
+		}
+	]
+}
