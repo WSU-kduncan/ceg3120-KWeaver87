@@ -31,6 +31,13 @@ These instructions assume you are using a systemd-based Linux distro (most are, 
 
 - On your server, create a system user for the bot to run under.
   - On a Debian-based system (such as Ubuntu), use `sudo adduser --system --group --home /opt/riker-bot riker-bot`.
+- Place your Application ID and Token in a file at `/opt/riker-bot/.env`, following this template:
+
+```sh
+DISCORD_TOKEN=YourTokenHere
+DISCORD_APP_ID=YourAppIdHere
+```
+
 - Copy `riker-bot.service` from this repo to `/etc/systemd/system/`, adapting it as you need.
   - If not already set, change the permissions with `sudo chmod 644 riker-bot.service`.
 - Use `sudo systemctl enable riker-bot` to enable the program to run on bootup.
