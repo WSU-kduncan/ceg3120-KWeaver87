@@ -7,7 +7,7 @@ Type=simple
 User=riker-bot
 Group=riker-bot
 WorkingDirectory=/opt/riker-bot/
-ExecStart=/opt/riker-bot/Discord-Bot
+ExecStart=/opt/riker-bot/riker-bot
 Restart=always
 
 [Install]

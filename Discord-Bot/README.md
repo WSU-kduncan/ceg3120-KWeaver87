@@ -20,14 +20,16 @@ This part of the guide will be abbreviated. A more complete guide is at [RealPyt
 
 ### Compiling the code
 
+Note: This may take up to 2GB of free disk space.
+
 - Have [rustup](https://rustup.rs/) installed and updated.
 - On a CLI, clone the repo and CD into the `Discord-Bot` directory.
-- Run `cargo build --release` to compile an optimzed binary (this will take a few minutes).
+- Run `cargo build --release` to compile an optimized binary (this will take a few minutes).
 - Copy the binary from `target/release/riker-bot` to desired execution directory (this guide will use `/opt/riker-bot` as an example).
 
 ### Running the bot
 
-These instructions assume you are using a systemd-based Linux distro (most are, especially Debian, Ubuntu, Arch, and so on). There's no official support for SysVinit-based distros.
+These instructions assume you are using a systemd-based Linux distro (most are, especially Debian, Ubuntu, Arch, etc.). There's no official support for SysVinit-based distros.
 
 - On your server, create a system user for the bot to run under.
   - On a Debian-based system (such as Ubuntu), use `sudo adduser --system --group --home /opt/riker-bot riker-bot`.
@@ -40,6 +42,7 @@ DISCORD_APP_ID=YourAppIdHere
 
 - Copy `riker-bot.service` from this repo to `/etc/systemd/system/`, adapting it as you need.
   - If not already set, change the permissions with `sudo chmod 644 riker-bot.service`.
+- Copy the directory `data/` from this repo to `/opt/riker-bot/`
 - Use `sudo systemctl enable riker-bot` to enable the program to run on bootup.
 - Use `sudo systemctl start riker-bot` to start the program immediately.
 - Check that the bot is running (and read any error messages) by viewing the log with `sudo journalctl -u riker-bot`.
