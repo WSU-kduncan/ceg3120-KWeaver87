@@ -1,0 +1,14 @@
+[Unit]
+Description=riker-bot
+After=network.target
+
+[Service]
+Type=simple
+User=riker-bot
+Group=riker-bot
+WorkingDirectory=/opt/riker-bot/
+ExecStart=/opt/riker-bot/Discord-Bot
+Restart=always
+
+[Install]
+WantedBy=default.target

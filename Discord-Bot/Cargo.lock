@@ -3,18 +3,6 @@
 version = 3
 
 [[package]]
-name = "Discord-Bot"
-version = "0.1.0"
-dependencies = [
- "dotenv",
- "rand 0.8.4",
- "serde",
- "serde_json",
- "serenity",
- "tokio",
-]
-
-[[package]]
 name = "adler"
 version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -804,6 +792,18 @@ dependencies = [
  "web-sys",
  "webpki-roots 0.21.1",
  "winreg",
+]
+
+[[package]]
+name = "riker-bot"
+version = "0.1.0"
+dependencies = [
+ "dotenv",
+ "rand 0.8.4",
+ "serde",
+ "serde_json",
+ "serenity",
+ "tokio",
 ]
 
 [[package]]
