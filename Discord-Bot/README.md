@@ -6,6 +6,8 @@ This is a class project Discord Bot written in Rust on top of the [serenity](htt
 
 There are only two interactions with the bot. Entering `!riker` into chat will get a single line, and the `/riker` Command will give you an option to select up to 8 lines at once.
 
+![riker-bot usage](./img/riker-bot.png)
+
 ## Setup
 
 ### Discord Developer Portal
