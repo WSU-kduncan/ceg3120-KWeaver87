@@ -48,13 +48,16 @@ struct RikerLine {
 struct General;
 struct Handler;
 
+// Handles all events coming from Discord
 #[async_trait]
 impl EventHandler for Handler {
+	// Event fired after an Interaction is used.
     async fn interaction_create(&self, ctx: Context, interaction: Interaction) {
+        // Application Command is a Slash Command.
         if let Interaction::ApplicationCommand(command) = interaction {
             match command.data.name.as_str() {
                 "riker" => {
-                    let lines_requested: usize = command
+                    let lines_to_quote: usize = command
                         .data
                         .options
                         .first()
@@ -73,18 +76,20 @@ impl EventHandler for Handler {
                         .try_into()
                         .expect("Could not parse option from i64 to usize");
 
-                    send_riker_msg(&ctx, command.channel_id, lines_requested)
+                    send_riker_msg(&ctx, command.channel_id, lines_to_quote)
                         .await
                         .expect("Expected send Riker msg");
 
+                    // Discord expects some sort of response to the original
+					// command, or it'll complain that the command failed.
                     command
                         .create_interaction_response(&ctx.http, |res| {
                             res.kind(InteractionResponseType::ChannelMessageWithSource);
                             res.interaction_response_data(|res_data| {
                                 res_data.content(format!(
                                     "Sent {} line{}.",
-                                    lines_requested,
-                                    if lines_requested > 1 { "s" } else { "" }
+                                    lines_to_quote,
+                                    if lines_to_quote > 1 { "s" } else { "" }
                                 ));
                                 res_data.flags(
                                     InteractionApplicationCommandCallbackDataFlags::EPHEMERAL,
@@ -97,17 +102,14 @@ impl EventHandler for Handler {
                         })
                         .await
                         .expect("Expected Interaction Response");
-
-                    // command
-                    //     .delete_original_interaction_response(&ctx.http)
-                    //     .await
-                    //     .expect("Expected delete");
                 }
                 _ => println!("Invalid slash command: {}", command.data.name.as_str()),
             };
         }
     }
 
+	// Event fired after bot's connection to Discord API is ready.
+	// Generates Application Commandsand loads Riker data into `Context.data`.
     async fn ready(&self, ctx: Context, ready: Ready) {
         println!("{} is connected!", ready.user.name);
 
@@ -120,7 +122,7 @@ impl EventHandler for Handler {
                         .create_option(|option| {
                             option
                                 .name("num_lines")
-                                .description("The number of ipsum lines to generate")
+                                .description("The number of Riker lines to send in one message")
                                 .kind(ApplicationCommandOptionType::Integer)
                                 .required(false);
 
@@ -174,29 +176,31 @@ async fn riker(ctx: &Context, msg: &Message) -> CommandResult {
     Ok(())
 }
 
-async fn riker_ipsum(ctx: &Context, num_lines: usize) -> String {
+// Returns the number of requested lines as one big string, joined with a space.
+async fn riker_ipsum(ctx: &Context, lines_to_quote: usize) -> String {
     let data = ctx.data.read().await;
     let rikers = data
         .get::<RikerData>()
         .expect("Expected RikerData in TypeMap");
 
-    let mut rng = &mut rand::thread_rng();
-
     rikers
         .iter()
-        .choose_multiple(&mut rng, num_lines)
+        .choose_multiple(&mut rand::thread_rng(), lines_to_quote)
         .iter()
         .map(|line| line.text.clone())
         .collect::<Vec<String>>()
         .join(" ")
 }
 
+// Reads from file at RIKER_DATA_PATH
 fn load_riker_data() -> HashSet<RikerLine> {
-    let file = File::open(Path::new(RIKER_DATA_PATH)).expect("Couldn't load riker.json file");
+    let file = File::open(Path::new(RIKER_DATA_PATH)).expect("Error opening riker.json file");
 
-    serde_json::from_reader(&file).expect("Error reading riker.json data")
+    serde_json::from_reader(&file).expect("Error parsing riker.json data")
 }
 
+// Queries for and returns the Webhook for given ChannelId, or calls
+// create_riker_webhook() to build one.
 async fn get_bot_webhook(ctx: &Context, chan: ChannelId) -> Webhook {
     let http = ctx.http();
     let hooks = chan
@@ -224,8 +228,10 @@ async fn get_bot_webhook(ctx: &Context, chan: ChannelId) -> Webhook {
     }
 }
 
+// Creates a new Webhook for given ChannelId, using RIKER_AVATAR_PATH for avatar.
 async fn create_riker_webhook(chan_id: ChannelId, http: &Http, hook_name: String) -> Webhook {
-    // TODO: Query to find and reuse Discord CDN URL for avatar
+    // TODO: Query to find and reuse Discord CDN URL for avatar that doesn't
+	// use async within a closure.
     // let guilds = http
     //     .get_guilds(&GuildPagination::After(GuildId(0)), 100)
     //     .await
@@ -239,9 +245,10 @@ async fn create_riker_webhook(chan_id: ChannelId, http: &Http, hook_name: String
     chan_id
         .create_webhook_with_avatar(http, hook_name, avatar)
         .await
-        .expect("Expected new Webhook")
+        .expect("Expected created Webhook")
 }
 
+// Generates and sends a `lines` number of lines in one messagem using webhook.
 async fn send_riker_msg(
     ctx: &Context,
     chan: ChannelId,
