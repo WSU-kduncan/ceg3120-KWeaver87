@@ -4,7 +4,7 @@
 			"type": "lldb",
 			"request": "launch",
 			"name": "run Discord-Bot",
-			"program": "${workspaceFolder}/Discord-Bot/target/debug/Discord-Bot",
+			"program": "${workspaceFolder}/Discord-Bot/target/debug/riker-bot",
 			"args": [],
 			"cwd": "${workspaceFolder}/Discord-Bot",
 			"sourceMap": {},

@@ -2,14 +2,35 @@ use rand::prelude::IteratorRandom;
 use serde::Deserialize;
 use std::{collections::HashSet, convert::TryInto, env, fs::File, path::Path};
 
-use serenity::{async_trait, client::{Client, Context, EventHandler}, framework::standard::{
+use serenity::{
+    async_trait,
+    client::{Client, Context, EventHandler},
+    framework::standard::{
         macros::{command, group},
         CommandResult, StandardFramework,
-    }, http::{CacheHttp, Http}, model::{channel::Message, gateway::Ready, id::ChannelId, interactions::{Interaction, application_command::{ApplicationCommand, ApplicationCommandInteraction, ApplicationCommandInteractionDataOptionValue, ApplicationCommandOptionType}}, webhook::Webhook}, prelude::TypeMapKey};
+    },
+    http::{CacheHttp, Http},
+    model::{
+        channel::Message,
+        gateway::Ready,
+        id::ChannelId,
+        interactions::{
+            application_command::{
+                ApplicationCommand, ApplicationCommandInteractionDataOptionValue,
+                ApplicationCommandOptionType,
+            },
+            Interaction, InteractionApplicationCommandCallbackDataFlags, InteractionResponseType,
+        },
+        webhook::Webhook,
+    },
+    prelude::TypeMapKey,
+    Error,
+};
 
 const MAX_RIKER_LINES: i32 = 8;
 const RIKER_DATA_PATH: &str = "data/riker.json";
 const RIKER_NAME: &str = "Cmdr Riker";
+const RIKER_AVATAR_PATH: &str = "data/riker_avatar.jpg";
 struct RikerData;
 impl TypeMapKey for RikerData {
     type Value = HashSet<RikerLine>;
@@ -52,20 +73,35 @@ impl EventHandler for Handler {
                         .try_into()
                         .expect("Could not parse option from i64 to usize");
 
-                    let content = riker_ipsum(&ctx, lines_requested).await;
-                    let hook = get_bot_webhook(&ctx, &command).await;
+                    send_riker_msg(&ctx, command.channel_id, lines_requested)
+                        .await
+                        .expect("Expected send Riker msg");
 
-                    if let Err(why) = hook
-                        .execute(&ctx.http, false, |wh| {
-                            wh.content(content);
-                            wh.username(RIKER_NAME);
+                    command
+                        .create_interaction_response(&ctx.http, |res| {
+                            res.kind(InteractionResponseType::ChannelMessageWithSource);
+                            res.interaction_response_data(|res_data| {
+                                res_data.content(format!(
+                                    "Sent {} line{}.",
+                                    lines_requested,
+                                    if lines_requested > 1 { "s" } else { "" }
+                                ));
+                                res_data.flags(
+                                    InteractionApplicationCommandCallbackDataFlags::EPHEMERAL,
+                                );
 
-                            wh
+                                res_data
+                            });
+
+                            res
                         })
                         .await
-                    {
-                        println!("Cannot respond to riker command: {}", why);
-                    }
+                        .expect("Expected Interaction Response");
+
+                    // command
+                    //     .delete_original_interaction_response(&ctx.http)
+                    //     .await
+                    //     .expect("Expected delete");
                 }
                 _ => println!("Invalid slash command: {}", command.data.name.as_str()),
             };
@@ -133,7 +169,7 @@ async fn main() {
 
 #[command]
 async fn riker(ctx: &Context, msg: &Message) -> CommandResult {
-	// TODO: Webhook stuff!
+    // TODO: Webhook stuff!
     msg.reply(ctx, riker_ipsum(ctx, 1).await).await?;
 
     Ok(())
@@ -162,9 +198,8 @@ fn load_riker_data() -> HashSet<RikerLine> {
     serde_json::from_reader(&file).expect("Error reading riker.json data")
 }
 
-async fn get_bot_webhook(ctx: &Context, command: &ApplicationCommandInteraction) -> Webhook {
+async fn get_bot_webhook(ctx: &Context, chan: ChannelId) -> Webhook {
     let http = ctx.http();
-    let chan = command.channel_id;
     let hooks = chan
         .webhooks(http)
         .await
@@ -200,10 +235,27 @@ async fn create_riker_webhook(chan_id: ChannelId, http: &Http, hook_name: String
     //     let h = g.id.webhooks(http);
     //     todo!()
     // });
-    let avatar = Path::new("data/riker_avatar.jpg");
+    let avatar = Path::new(RIKER_AVATAR_PATH);
 
     chan_id
         .create_webhook_with_avatar(http, hook_name, avatar)
         .await
         .expect("Expected new Webhook")
+}
+
+async fn send_riker_msg(
+    ctx: &Context,
+    chan: ChannelId,
+    lines: usize,
+) -> Result<Option<Message>, Error> {
+    let content = riker_ipsum(&ctx, lines).await;
+    let hook = get_bot_webhook(&ctx, chan).await;
+
+    hook.execute(&ctx.http, false, |wh| {
+        wh.content(content);
+        wh.username(RIKER_NAME);
+
+        wh
+    })
+    .await
 }
