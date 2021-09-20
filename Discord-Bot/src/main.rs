@@ -29,7 +29,7 @@ use serenity::{
 
 const MAX_RIKER_LINES: i32 = 8;
 const RIKER_DATA_PATH: &str = "data/riker.json";
-const RIKER_NAME: &str = "Cmdr Riker";
+const RIKER_NAME: &str = "Commander William T. Riker";
 const RIKER_AVATAR_PATH: &str = "data/riker_avatar.jpg";
 struct RikerData;
 impl TypeMapKey for RikerData {
@@ -169,8 +169,7 @@ async fn main() {
 
 #[command]
 async fn riker(ctx: &Context, msg: &Message) -> CommandResult {
-    // TODO: Webhook stuff!
-    msg.reply(ctx, riker_ipsum(ctx, 1).await).await?;
+    send_riker_msg(&ctx, msg.channel_id, 1).await?;
 
     Ok(())
 }
@@ -226,7 +225,7 @@ async fn get_bot_webhook(ctx: &Context, chan: ChannelId) -> Webhook {
 }
 
 async fn create_riker_webhook(chan_id: ChannelId, http: &Http, hook_name: String) -> Webhook {
-    // TODO: Use the same Discord-hosted URL for avatar
+    // TODO: Query to find and reuse Discord CDN URL for avatar
     // let guilds = http
     //     .get_guilds(&GuildPagination::After(GuildId(0)), 100)
     //     .await
