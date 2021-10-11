@@ -2,8 +2,6 @@
 
 ## Part 1 - Build a VPC
 
-For each step below, provide a screenshot that shows the network resource has been created according to specification along with a description of what the resource does (what is its role). You may add whatever additional notes you would like. The screenshot and description of each network component is required. Any other notes you leave behind may make this project more useful in the future. Getting a good screenshot can be done by clicking on the resource and showing configurations in the details menu.
-
 ### VPC
 
 A Virtual Private Cloud is an isolated network of resources created with a cloud computing vendor.
@@ -34,7 +32,7 @@ A security group acts as a firewall for the VPC, specifying what IPs and ports c
 
 ![sec group](img/05-secgroup.png)
 
-## Part 2
+## Part 2 - EC2 instances
 
 1. Create a new instance.
     - Created a new t2.micro instance of AMI
