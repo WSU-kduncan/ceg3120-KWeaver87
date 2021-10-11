@@ -1,0 +1,10 @@
+{
+	"recommendations": [
+		"bungcip.better-toml",
+		"vadimcn.vscode-lldb",
+		"serayuzgur.crates",
+		"yzhang.markdown-all-in-one",
+		"gruntfuggly.todo-tree",
+		"matklad.rust-analyzer"
+	]
+}
