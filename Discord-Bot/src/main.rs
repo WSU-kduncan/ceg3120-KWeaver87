@@ -109,7 +109,7 @@ impl EventHandler for Handler {
     }
 
 	// Event fired after bot's connection to Discord API is ready.
-	// Generates Application Commandsand loads Riker data into `Context.data`.
+	// Generates Application Commands and loads Riker data into `Context.data`.
     async fn ready(&self, ctx: Context, ready: Ready) {
         println!("{} is connected!", ready.user.name);
 
@@ -248,7 +248,7 @@ async fn create_riker_webhook(chan_id: ChannelId, http: &Http, hook_name: String
         .expect("Expected created Webhook")
 }
 
-// Generates and sends a `lines` number of lines in one messagem using webhook.
+// Generates and sends a `lines` number of lines in one message, using webhook.
 async fn send_riker_msg(
     ctx: &Context,
     chan: ChannelId,
