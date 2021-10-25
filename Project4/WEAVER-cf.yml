@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
-  Weaver CF Template creating a single VPC with a single, publicly accessible t2.micro EC2 instance in us-east-1 using Elastic IP, and allowing SSH access only from trust networks
+  Weaver CF Template creating a single VPC with a single, publicly accessible t2.micro EC2 instance in us-east-1 using Elastic IP, and allowing SSH access only from trusted networks
 Parameters:
   KeyName:
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
