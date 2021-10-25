@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
-  Weaver CF Template creating a single VPC with a single t2.micro EC2 instance in us-east-1 using Elastic IP, and allowing SSH access only from trust networks
+  Weaver CF Template creating a single VPC with a single, publicly accessible t2.micro EC2 instance in us-east-1 using Elastic IP, and allowing SSH access only from trust networks
 Parameters:
   KeyName:
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
@@ -77,7 +77,7 @@ Resources:
     Properties:
       Domain: vpc
       InstanceId: !Ref PublicUbuntuInstance
-  Lab1SecurityGroup:
+  Project4SecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
       VpcId: !Ref VPC
@@ -94,7 +94,7 @@ Resources:
           ToPort: 22
           CidrIp: 130.108.0.0/16 # WSU CIDR
         - Description: 'Full internal Access'
-          IpProtocol: tcp
+          IpProtocol: -1
           FromPort: -1
           ToPort: -1
           CidrIp: 10.0.0.0/24
@@ -123,7 +123,7 @@ Resources:
           Value: CF-instance
       NetworkInterfaces:
         - GroupSet:
-            - !Ref Lab1SecurityGroup
+            - !Ref Project4SecurityGroup
           AssociatePublicIpAddress: true
           DeviceIndex: '0'
           DeleteOnTermination: true
@@ -132,8 +132,8 @@ Resources:
       UserData:
         Fn::Base64: |
           #!/bin/bash -xe
-          apt-get update && \
-          apt-get install -y \
+          apt-get update -q && \
+          apt-get install -yq \
             build-essential \
             git \
             zsh \
@@ -142,5 +142,6 @@ Resources:
             aptitude \
             fail2ban \
             python3 \
-            pip3 && \
+            python3-pip && \
+          apt-get upgrade -yq && \
           reboot
