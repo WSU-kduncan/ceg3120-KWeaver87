@@ -4,5 +4,8 @@
 	],
 	"spellright.documentTypes": [
 		"markdown"
+	],
+	"cSpell.enableFiletypes": [
+		"!yaml"
 	]
 }
