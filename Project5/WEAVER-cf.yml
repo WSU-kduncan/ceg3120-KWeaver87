@@ -164,19 +164,19 @@ Resources:
         Fn::Base64: !Sub |
           #!/bin/bash -xe
           # Run common init script
-          sh -c "$(curl -fsSL ${RepoUrl}/files/init-script.sh)" &&
+          sh -c "$(curl -fsSL ${RepoUrl}/files/init-script.sh)"
 
           # Set hostname
-          hostnamectl set-hostname proj5-proxy &&
+          hostnamectl set-hostname proj5-proxy
 
           # Install specific packages
-          apt install -y haproxy nftables &&
+          apt install -y haproxy nftables
 
           # Enable and configure port forwarding
-          echo "net.ipv4.forwarding = 1" >> /etc/sysctl.conf &&
-          echo "net.ipv4.conf.eth0.forwarding = 1" >> /etc/sysctl.conf &&
-          systemctl enable nftables.service &&
-          curl -fsSL ${RepoUrl}/files/nftables.conf -o /etc/nftables.conf &&
+          echo "net.ipv4.forwarding = 1" >> /etc/sysctl.conf
+          echo "net.ipv4.conf.eth0.forwarding = 1" >> /etc/sysctl.conf
+          systemctl enable nftables.service
+          curl -fsSL ${RepoUrl}/files/nftables.conf -o /etc/nftables.conf
 
           # Close out with reboot
           reboot
@@ -210,13 +210,13 @@ Resources:
         Fn::Base64: !Sub |
           #!/bin/bash -xe
           # Run common init script
-          sh -c "$(curl -fsSL ${RepoUrl}/files/init-script.sh)" &&
+          sh -c "$(curl -fsSL ${RepoUrl}/files/init-script.sh)"
 
           # Set hostname
-          hostnamectl set-hostname httpd-1 &&
+          hostnamectl set-hostname httpd-1
 
           # Install specific packages
-          apt install -y nginx &&
+          apt install -y nginx
 
           # Close out with reboot
           reboot
@@ -250,13 +250,13 @@ Resources:
         Fn::Base64: !Sub |
           #!/bin/bash -xe
           # Run common init script
-          sh -c "$(curl -fsSL ${RepoUrl}/files/init-script.sh)" &&
+          sh -c "$(curl -fsSL ${RepoUrl}/files/init-script.sh)"
 
           # Set hostname
-          hostnamectl set-hostname httpd-2 &&
+          hostnamectl set-hostname httpd-2
 
           # Install specific packages
-          apt install -y nginx &&
+          apt install -y nginx
 
           # Close out with reboot
           reboot
