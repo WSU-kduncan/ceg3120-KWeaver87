@@ -8,12 +8,18 @@ Instances take about 7 minutes to come fully online after CloudFormation creatio
 - Run a website of choice using nginx or apache2
 - Configure the HAProxy load balancer to direct traffic to two backend systems
 
+## Link
+
+http://ceg3120.kweave.net
+
+The haproxy load balancing may be interfered with by fancy Cloudflare DNS services.
+
 ## SSH
 
 - Public load balancer: `ssh ubuntu@ceg3120.kweave.net`
 - Private web server 1: `ssh ubuntu@ceg3120.kweave.net -p 2201`
 - Private web server 2: `ssh ubuntu@ceg3120.kweave.net -p 2202`
-- Installed nftables to configure port forwarding from proxy to web servers
+- Installed nftables to configure port forwarding from proxy to web servers, so the web servers are not publicly exposed.
   - [Configuration file](./files/nftables.conf) (/etc/nftables.conf)
   - Reference used: [RHEL7 Security Guide](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-configuring_port_forwarding_using_nftables)
 
@@ -35,11 +41,10 @@ Instances take about 7 minutes to come fully online after CloudFormation creatio
 
 ## Screenshots
 
-- one screenshot that shows content from "server 1"
-- one screenshot that shows content from "server 2"
+### Server 1
 
-## Link
+![Server 1](./img/server1.png)
 
-http://ceg3120.kweave.net
+### Server 2
 
-The haproxy load balancing may be interfered with by fancy Cloudflare DNS services.
+![Server 2](./img/server2.png)
