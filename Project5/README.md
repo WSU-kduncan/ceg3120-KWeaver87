@@ -12,7 +12,11 @@ Instances take about 7 minutes to come fully online after CloudFormation creatio
 
 http://ceg3120.kweave.net
 
-The haproxy load balancing may be interfered with by fancy Cloudflare DNS services.
+Note: The haproxy load balancing may be interfered with by fancy Cloudflare DNS/caching services. Along with browser security features that attempt to automatically redirect to HTTPS.
+
+## /etc/hosts
+
+The [common initial setup script](./files/init-script.sh) that runs on all instances will append all 3 private IP address and hostnames to /etc/hosts.
 
 ## SSH
 
