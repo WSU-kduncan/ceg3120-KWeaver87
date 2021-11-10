@@ -20,10 +20,10 @@ Instances take about 7 minutes to come fully online after CloudFormation creatio
 ## HAProxy
 
 - Install: `apt install haproxy`
-- What file(s) where modified & their location
-- What configuration(s) were set (if any)
+- Only config file modified.
+- [Configuration changes](./files/haproxy.cfg.append) were appended into /etc/haproxy/haproxy.cfg
 - Restart server (after config change): `systemctl restart haproxy.service`
-- Resources used (websites)
+- Resources use: [HAProxy Configuration Manual](https://cbonte.github.io/haproxy-dconv/2.0/configuration.html)
 
 ## Web server 1 & 2
 

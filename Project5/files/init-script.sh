@@ -4,7 +4,7 @@ apt update
 apt full-upgrade -y
 
 # Install desired packages
-apt install -y git fish doc-base curl ripgrep fd-find fail2ban w3m
+apt install -y git fish doc-base curl ripgrep fd-find fail2ban w3m kakoune
 
 # Append friendly names to hosts
 echo "
@@ -16,5 +16,5 @@ echo "
 sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- -y
 echo "starship init fish | source" >> /etc/fish/config.fish
 
-# Make fish default shell
+# Make fish the default shell
 sed -i 's#/bin/bash#/usr/bin/fish#g' /etc/passwd

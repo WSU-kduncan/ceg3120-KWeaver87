@@ -172,11 +172,15 @@ Resources:
           # Install specific packages
           apt install -y haproxy nftables
 
+          # Configure haproxy
+          curl -fsSL ${RepoUrl}/files/haproxy.cfg.append >> /etc/haproxy/haproxy.cfg
+
           # Enable and configure port forwarding
-          echo "net.ipv4.forwarding = 1" >> /etc/sysctl.conf
-          echo "net.ipv4.conf.eth0.forwarding = 1" >> /etc/sysctl.conf
+          echo "net.ipv4.forwarding = 1
+          net.ipv4.conf.eth0.forwarding = 1
+          " >> /etc/sysctl.conf
           systemctl enable nftables.service
-          curl -fsSL ${RepoUrl}/files/nftables.conf -o /etc/nftables.conf
+          curl -fsSL ${RepoUrl}/files/nftables.conf > /etc/nftables.conf
 
           # Close out with reboot
           reboot
@@ -217,7 +221,7 @@ Resources:
 
           # Install web server and index file
           apt install -y nginx
-          curl -fsSL ${RepoUrl}/www/index1.html -o /var/www/html/index.html
+          curl -fsSL ${RepoUrl}/www/index1.html > /var/www/html/index.html
 
           # Close out with reboot
           reboot
@@ -258,7 +262,7 @@ Resources:
 
           # Install web server and index file
           apt install -y nginx
-          curl -fsSL ${RepoUrl}/www/index2.html -o /var/www/html/index.html
+          curl -fsSL ${RepoUrl}/www/index2.html > /var/www/html/index.html
 
           # Close out with reboot
           reboot
