@@ -4,5 +4,11 @@
 	],
 	"spellright.documentTypes": [
 		"markdown"
+	],
+	"cSpell.enableFiletypes": [
+		"!yaml"
+	],
+	"cSpell.words": [
+		"nftables"
 	]
 }
