@@ -215,8 +215,9 @@ Resources:
           # Set hostname
           hostnamectl set-hostname httpd-1
 
-          # Install specific packages
+          # Install web server and index file
           apt install -y nginx
+          curl -fsSL ${RepoUrl}/www/index1.html -o /var/www/html/index.html
 
           # Close out with reboot
           reboot
@@ -255,8 +256,9 @@ Resources:
           # Set hostname
           hostnamectl set-hostname httpd-2
 
-          # Install specific packages
+          # Install web server and index file
           apt install -y nginx
+          curl -fsSL ${RepoUrl}/www/index2.html -o /var/www/html/index.html
 
           # Close out with reboot
           reboot
