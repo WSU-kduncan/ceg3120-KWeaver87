@@ -8,16 +8,19 @@
 
 ## SSH
 
-- Public load balancer: `ssh ubuntu@ceg2350.kweave.net`
-- Private web server 1: `ssh ubuntu@ceg2350.kweave.net -P 2201`
-- Private web server 2: `ssh ubuntu@ceg2350.kweave.net -P 2202`
+- Public load balancer: `ssh ubuntu@ceg3120.kweave.net`
+- Private web server 1: `ssh ubuntu@ceg3120.kweave.net -p 2201`
+- Private web server 2: `ssh ubuntu@ceg3120.kweave.net -p 2202`
+- Installed nftables to set up portforwarding from proxy to web servers
+  - [Configuration file](./files/nftables.conf) (/etc/nftables.conf)
+  - Reference used: [RHEL7 Security Guide](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-configuring_port_forwarding_using_nftables)
 
 ## HAProxy
 
 - Install: `apt install haproxy`
 - What file(s) where modified & their location
 - What configuration(s) were set (if any)
-- How to restart the service after a configuration change
+- Restart server (after config change): `systemctl restart haproxy.service`
 - Resources used (websites)
 
 ## Web server 1 & 2
@@ -35,4 +38,6 @@
 
 ## Link
 
-http://ceg2350.kweave.net
+http://ceg3120.kweave.net
+
+The haproxy load balancing may be interfered with by fancy Cloudflare DNS services.
