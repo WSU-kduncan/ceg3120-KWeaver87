@@ -27,7 +27,7 @@ The haproxy load balancing may be interfered with by fancy Cloudflare DNS servic
 
 - Install: `apt install haproxy`
 - Only config file modified.
-- [Configuration changes](./files/haproxy.cfg.append) were appended into /etc/haproxy/haproxy.cfg
+- [Configuration changes](./files/haproxy.cfg.append) were appended onto package's default config at /etc/haproxy/haproxy.cfg
 - Restart server (after config change): `systemctl restart haproxy.service`
 - Resources use: [HAProxy Configuration Manual](https://cbonte.github.io/haproxy-dconv/2.0/configuration.html)
 
@@ -35,7 +35,7 @@ The haproxy load balancing may be interfered with by fancy Cloudflare DNS servic
 
 - Install: `apt install nginx`
 - HTML index files were dropped into /var/www/html/index.html
-- No configuration changes made
+- No configuration changes made from package defaults.
 - Restart server (after config change): `systemctl restart nginx.service`
 - No resources used
 
