@@ -1,6 +1,6 @@
 # Project 5
 
-Instances take about 7 minutes to come online after CloudFormation creation.
+Instances take about 7 minutes to come fully online after CloudFormation creation.
 
 ## Objectives
 
@@ -13,7 +13,7 @@ Instances take about 7 minutes to come online after CloudFormation creation.
 - Public load balancer: `ssh ubuntu@ceg3120.kweave.net`
 - Private web server 1: `ssh ubuntu@ceg3120.kweave.net -p 2201`
 - Private web server 2: `ssh ubuntu@ceg3120.kweave.net -p 2202`
-- Installed nftables to set up port forwarding from proxy to web servers
+- Installed nftables to configure port forwarding from proxy to web servers
   - [Configuration file](./files/nftables.conf) (/etc/nftables.conf)
   - Reference used: [RHEL7 Security Guide](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-configuring_port_forwarding_using_nftables)
 
